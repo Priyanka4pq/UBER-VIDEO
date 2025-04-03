@@ -31,15 +31,28 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
+  const token = jwt.sign(
+    { _id: this._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "24h" } // Set token expiration to 24 hours
+  );
   return token;
 };
 
 userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
+
 userSchema.statics.hashPassword = async function (password) {
   return await bcrypt.hash(password, 10);
+};
+
+userSchema.statics.verifyAuthToken = function (token) {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    throw new Error("Invalid token");
+  }
 };
 
 const UserModel = mongoose.model("User", userSchema);
