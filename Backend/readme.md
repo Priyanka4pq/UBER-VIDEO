@@ -155,3 +155,106 @@ The following fields are required in the request body:
 - Ensure the `email` exists in the database.
 - Passwords are compared securely using hashing.
 - The returned JWT token should be included in the `Authorization` header for protected routes.
+
+---
+
+## Endpoint: `/users/profile`
+
+### Description
+
+This endpoint is used to retrieve the profile of the currently authenticated user.
+
+### Method
+
+`GET`
+
+### Headers
+
+| Header          | Type   | Required | Description                      |
+| --------------- | ------ | -------- | -------------------------------- |
+| `Authorization` | String | Yes      | Bearer token for authentication. |
+
+### Response
+
+#### Success (200 OK)
+
+```json
+{
+  "id": "unique_user_id",
+  "email": "example@example.com",
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  }
+}
+```
+
+#### Error (401 Unauthorized)
+
+```json
+{
+  "error": "Unauthorized: No token provided"
+}
+```
+
+#### Error (500 Internal Server Error)
+
+```json
+{
+  "error": "An unexpected error occurred"
+}
+```
+
+### Notes
+
+- Requires a valid JWT token in the `Authorization` header.
+- The token must not be blacklisted.
+
+---
+
+## Endpoint: `/users/logout`
+
+### Description
+
+This endpoint is used to log out the currently authenticated user by clearing the authentication token.
+
+### Method
+
+`GET`
+
+### Headers
+
+| Header          | Type   | Required | Description                      |
+| --------------- | ------ | -------- | -------------------------------- |
+| `Authorization` | String | Yes      | Bearer token for authentication. |
+
+### Response
+
+#### Success (200 OK)
+
+```json
+{
+  "message": "Logout successful"
+}
+```
+
+#### Error (401 Unauthorized)
+
+```json
+{
+  "error": "Unauthorized: No token provided"
+}
+```
+
+#### Error (500 Internal Server Error)
+
+```json
+{
+  "error": "An unexpected error occurred"
+}
+```
+
+### Notes
+
+- Requires a valid JWT token in the `Authorization` header.
+- The token is cleared from cookies and can no longer be used.
