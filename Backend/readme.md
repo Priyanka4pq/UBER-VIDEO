@@ -258,3 +258,103 @@ This endpoint is used to log out the currently authenticated user by clearing th
 
 - Requires a valid JWT token in the `Authorization` header.
 - The token is cleared from cookies and can no longer be used.
+
+---
+
+# Captain Routes Documentation
+
+## Endpoint: `/captain/register`
+
+### Description
+
+This endpoint is used to register a new captain in the system. It validates the input data and creates a new captain record in the database.
+
+### Method
+
+`POST`
+
+### Request Body
+
+The following fields are required in the request body:
+
+| Field                 | Type   | Required | Description                                              |
+| --------------------- | ------ | -------- | -------------------------------------------------------- |
+| `email`               | String | Yes      | Must be a valid email address.                           |
+| `fullname.firstname`  | String | Yes      | Must be at least 3 characters long.                      |
+| `fullname.lastname`   | String | No       | Optional, but must be at least 3 characters if provided. |
+| `password`            | String | Yes      | Must be at least 6 characters long.                      |
+| `vehicle.color`       | String | Yes      | Must be at least 3 characters long.                      |
+| `vehicle.plate`       | String | Yes      | Must be at least 3 characters long.                      |
+| `vehicle.capacity`    | Number | Yes      | Must be at least 1.                                      |
+| `vehicle.vehicleType` | String | Yes      | Must be either `car`, `bike`, or `auto`.                 |
+
+### Example Request Body
+
+```json
+{
+  "email": "captain@example.com",
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "password": "securepassword",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+### Response
+
+#### Success (201 Created)
+
+```json
+{
+  "message": "Captain registered successfully",
+  "captain": {
+    "id": "unique_captain_id",
+    "email": "captain@example.com",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+#### Error (400 Bad Request)
+
+```json
+{
+  "error": "Validation failed",
+  "details": [
+    "Invalid Email",
+    "First name must be at least 3 characters",
+    "Password must be at least 6 characters",
+    "Vehicle type must be either car, bike or auto"
+  ]
+}
+```
+
+#### Error (500 Internal Server Error)
+
+```json
+{
+  "error": "An unexpected error occurred"
+}
+```
+
+### Notes
+
+- Ensure that the `email` field is unique.
+- Passwords are hashed before being stored in the database.
+- The `socketId` field is optional and can be updated later.
