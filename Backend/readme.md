@@ -353,8 +353,190 @@ The following fields are required in the request body:
 }
 ```
 
+---
+
+## Endpoint: `/captain/login`
+
+### Description
+
+This endpoint is used to authenticate a captain and provide a JWT token for subsequent requests.
+
+### Method
+
+`POST`
+
+### Request Body
+
+The following fields are required in the request body:
+
+| Field      | Type   | Required | Description                         |
+| ---------- | ------ | -------- | ----------------------------------- |
+| `email`    | String | Yes      | Must be a valid email address.      |
+| `password` | String | Yes      | Must be at least 6 characters long. |
+
+### Example Request Body
+
+```json
+{
+  "email": "captain@example.com",
+  "password": "securepassword"
+}
+```
+
+### Response
+
+#### Success (200 OK)
+
+```json
+{
+  "token": "jwt_token_here",
+  "captain": {
+    "id": "unique_captain_id",
+    "email": "captain@example.com",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+#### Error (400 Bad Request)
+
+```json
+{
+  "error": "Validation failed",
+  "details": ["Invalid Email", "Password must be at least 6 characters"]
+}
+```
+
+#### Error (401 Unauthorized)
+
+```json
+{
+  "error": "Invalid email or password"
+}
+```
+
+#### Error (500 Internal Server Error)
+
+```json
+{
+  "error": "An unexpected error occurred"
+}
+```
+
+---
+
+## Endpoint: `/captain/profile`
+
+### Description
+
+This endpoint is used to retrieve the profile of the currently authenticated captain.
+
+### Method
+
+`GET`
+
+### Headers
+
+| Header          | Type   | Required | Description                      |
+| --------------- | ------ | -------- | -------------------------------- |
+| `Authorization` | String | Yes      | Bearer token for authentication. |
+
+### Response
+
+#### Success (200 OK)
+
+```json
+{
+  "captain": {
+    "id": "unique_captain_id",
+    "email": "captain@example.com",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+#### Error (401 Unauthorized)
+
+```json
+{
+  "error": "Unauthorized: No token provided"
+}
+```
+
+#### Error (500 Internal Server Error)
+
+```json
+{
+  "error": "An unexpected error occurred"
+}
+```
+
+---
+
+## Endpoint: `/captain/logout`
+
+### Description
+
+This endpoint is used to log out the currently authenticated captain by blacklisting the authentication token.
+
+### Method
+
+`GET`
+
+### Headers
+
+| Header          | Type   | Required | Description                      |
+| --------------- | ------ | -------- | -------------------------------- |
+| `Authorization` | String | Yes      | Bearer token for authentication. |
+
+### Response
+
+#### Success (200 OK)
+
+```json
+{
+  "message": "Logout successful"
+}
+```
+
+#### Error (401 Unauthorized)
+
+```json
+{
+  "error": "Unauthorized: No token provided"
+}
+```
+
+#### Error (500 Internal Server Error)
+
+```json
+{
+  "error": "An unexpected error occurred"
+}
+```
+
+---
+
 ### Notes
 
-- Ensure that the `email` field is unique.
+- Ensure that the `email` field is unique for registration.
 - Passwords are hashed before being stored in the database.
-- The `socketId` field is optional and can be updated later.
+- The token must not be blacklisted for protected routes.
