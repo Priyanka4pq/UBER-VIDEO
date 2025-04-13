@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { UserDataContext } from "../context/UserContext";
 
 const UserSignup = () => {
   const [email, setEmail] = useState("");
@@ -8,18 +10,46 @@ const UserSignup = () => {
   const [lastName, setLastName] = useState("");
   const [userData, setUserData] = useState({});
 
-  const submitHandler = (e) => {
+  const navigate = useNavigate();
+
+  const { user, setUser } = useContext(UserDataContext);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    setUserData({ fullName: { firstName, lastName }, email, password });
-    console.log(userData);
-    // Add your signup logic here
-    alert("Signup successful");
-    // Reset the input fields after submission
-    setEmail("");
-    setPassword("");
-    setFirstName("");
-    setLastName("");
-    console.log("Signup submitted", { email, password, firstName, lastName });
+
+    const newUser = {
+      fullname: { firstname: firstName, lastname: lastName },
+      email: email,
+      password: password,
+    };
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/users/register`,
+        newUser
+      );
+
+      if (response.status === 201) {
+        const data = response.data;
+        setUser(data.user);
+        localStorage.setItem("token", data.token); // Store the token in local storage
+        navigate("/home"); // Redirect to the home page after successful signup
+        alert("Signup successful");
+      }
+
+      console.log(userData);
+      // Add your signup logic here
+      alert("Signup successful");
+      // Reset the input fields after submission
+      setEmail("");
+      setPassword("");
+      setFirstName("");
+      setLastName("");
+      console.log("Signup submitted", { email, password, firstName, lastName });
+    } catch (error) {
+      console.error("Error during signup:", error);
+      alert("Signup failed. Please try again.");
+    }
   };
 
   return (
@@ -41,7 +71,7 @@ const UserSignup = () => {
                 required
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="bg-[#eeeeee] mb-6 rounded px-4 py-2 w-1/2 border-2 text-lg placeholder::text-base"
+                className="bg-[#eeeeee] mb-6 rounded px-4 py-2 w-1/2 border-2 text-lg placeholder:text-base"
                 type="text"
                 placeholder="First name"
               />
@@ -49,7 +79,7 @@ const UserSignup = () => {
                 required
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="bg-[#eeeeee] mb-6 rounded px-4 py-2 w-1/2 border-2 text-lg placeholder::text-base"
+                className="bg-[#eeeeee] mb-6 rounded px-4 py-2 w-1/2 border-2 text-lg placeholder:text-base"
                 type="text"
                 placeholder="Last name"
               />
@@ -60,7 +90,7 @@ const UserSignup = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-[#eeeeee] mb-6 rounded px-4 py-2 border-2 w-full text-lg placeholder::text-base"
+              className="bg-[#eeeeee] mb-6 rounded px-4 py-2 border-2 w-full text-lg placeholder:text-base"
               type="email"
               placeholder="email@example.com"
             />

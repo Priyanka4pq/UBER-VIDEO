@@ -16,6 +16,9 @@ router.post(
       .withMessage("Password must be atleast 6 character"),
   ],
   userController.registerUser
+  //  (req, res) => {
+  //   log(req.body);
+  //  }
 );
 
 router.post(
