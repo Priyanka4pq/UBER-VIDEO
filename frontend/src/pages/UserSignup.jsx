@@ -18,7 +18,10 @@ const UserSignup = () => {
     e.preventDefault();
 
     const newUser = {
-      fullname: { firstname: firstName, lastname: lastName },
+      fullname: {
+        firstname: firstName,
+        lastname: lastName,
+      },
       email: email,
       password: password,
     };
@@ -36,19 +39,14 @@ const UserSignup = () => {
         navigate("/home"); // Redirect to the home page after successful signup
         alert("Signup successful");
       }
-
-      console.log(userData);
-      // Add your signup logic here
-      alert("Signup successful");
-      // Reset the input fields after submission
-      setEmail("");
-      setPassword("");
-      setFirstName("");
-      setLastName("");
-      console.log("Signup submitted", { email, password, firstName, lastName });
     } catch (error) {
-      console.error("Error during signup:", error);
-      alert("Signup failed. Please try again.");
+      if (error.response && error.response.status === 409) {
+        alert("User already exists. Please login.");
+        navigate("/login"); // Redirect to the login page if user already exists
+      } else {
+        console.error("Error during signup:", error);
+        alert("Signup failed. Please try again.");
+      }
     }
   };
 
