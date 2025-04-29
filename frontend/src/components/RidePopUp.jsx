@@ -1,26 +1,38 @@
 import React from "react";
 
-const LocationForDriver = (props) => {
+const RidePopUp = (props) => {
   return (
     <div>
       <h5
         onClick={() => {
-          props.setVehicleFound(false);
+          props.setRidePopUpPanel(false);
         }}
         className="p-1 text-center absolute w-[100%] top-0"
       >
         <i className="ri-arrow-down-double-line text-3xl text-gray-500"></i>
       </h5>
       <h3 className="text-2xl font-semibold mb-5 p-3 border-b-2">
-        Looking for a Driver
+        New Ride Available
       </h3>
 
-      <div className="flex gap-2 flex-col justify-between items-center">
-        <img
-          className="h-20"
-          src="https://t4.ftcdn.net/jpg/07/42/50/05/360_F_742500540_BxXHiukopkGqglLH8NGpjoKK25ajYlgl.jpg"
-          alt=""
-        />
+      <div className="flex items-center justify-between mt-4 p-3 bg-gray-100 rounded-xl">
+        <div className="flex items-center gap-3 ">
+          <img
+            className="h-12 w-12 rounded-full object-cover "
+            src="https://cdn.pixabay.com/photo/2017/08/01/01/33/beanie-2562646_1280.jpg"
+            alt=""
+          />
+          <h2 className="text-lg font-medium">Saheer Ghandhi</h2>
+        </div>
+        <h5 className="text-lg font-semibold">2.2 KM</h5>
+      </div>
+
+      <div
+        className="flex gap-2 flex-col justify-between items-center"
+        onClick={() => {
+          props.setVehiclePanelOpen(false);
+        }}
+      >
         <div className="w-full mt-5">
           <div className="flex items-center gap-5 p-3 border-b-2 border-gray-300">
             <i className="text-lg  ri-map-pin-line"></i>
@@ -50,9 +62,26 @@ const LocationForDriver = (props) => {
             </div>
           </div>
         </div>
+        <button
+          onClick={() => {
+            props.setConfirmRidePopUpPanel(true);
+          }}
+          className="w-full bg-green-600 mt-5 text-white font-semibold p-2 rounded-lg"
+        >
+          Accept
+        </button>
+
+        <button
+          onClick={() => {
+            props.setRidePopUpPanel(false);
+          }}
+          className="w-full mt-1 bg-gray-200 text-gray-500 font-semibold p-2 rounded-lg"
+        >
+          Ignore
+        </button>
       </div>
     </div>
   );
 };
 
-export default LocationForDriver;
+export default RidePopUp;

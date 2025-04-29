@@ -5,7 +5,7 @@ import "remixicon/fonts/remixicon.css";
 import LocationSearchPanel from "../components/LocationSearchPanel";
 import VehiclePanel from "../components/VehiclePanel";
 import ConfirmeRide from "../components/ConfirmeRide";
-import LocationForDriver from "../components/LocationForDriver";
+import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingFor Driver";
 
 const Home = () => {
@@ -14,10 +14,10 @@ const Home = () => {
   const [panelOpen, setPanelOpen] = useState(false);
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
-  const [vehiclePanelOpen, setVehiclePanelOpen] = useState(false);
+  const [vehiclePanel, setVehiclePanel] = useState(false);
   const [confirmRidePanel, setConfirmRidePanel] = useState(false);
   const [vehicleFound, setVehicleFound] = useState(false);
-  const [waitingForDriver, setWaitingForDrivere] = useState(false);
+  const [waitingForDriver, setWaitingForDriver] = useState(false);
   const vehiclePanelRef = useRef(null);
   const confirmRidePanelRef = useRef(null);
   const vehicleFoundRef = useRef(null);
@@ -56,7 +56,7 @@ const Home = () => {
 
   useGSAP(
     function () {
-      if (vehiclePanelOpen) {
+      if (vehiclePanel) {
         gsap.to(vehiclePanelRef.current, {
           transform: "translateY(0)",
         });
@@ -66,7 +66,7 @@ const Home = () => {
         });
       }
     },
-    [vehiclePanelOpen]
+    [vehiclePanel]
   );
 
   useGSAP(
@@ -119,8 +119,9 @@ const Home = () => {
         // src="https://freelogopng.com/images/all_img/1659768779uber-logo-white.png"
         src="https://cdn.worldvectorlogo.com/logos/uber-2.svg"
         alt=""
-        className="w-16 mb-10 mr-auto absolute top-5 left-7"
+        className="w-16 mb-10 mr-auto absolute top-5 left-5"
       />
+
       <div className="h-screen w-screen flex flex-col justify-between mb-2 items-center">
         {/* image for temporary use */}
         <img
@@ -174,7 +175,7 @@ const Home = () => {
         >
           <LocationSearchPanel
             setPanelOpen={setPanelOpen}
-            setVehiclePanelOpen={setVehiclePanelOpen}
+            setVehiclePanel={setVehiclePanel}
           />
         </div>
       </div>
@@ -187,7 +188,7 @@ const Home = () => {
       >
         <VehiclePanel
           setConfirmRidePanel={setConfirmRidePanel}
-          setVehiclePanelOpen={setVehiclePanelOpen}
+          setVehiclePanel={setVehiclePanel}
         />
       </div>
       <div
@@ -197,18 +198,18 @@ const Home = () => {
         <ConfirmeRide
           setConfirmRidePanel={setConfirmRidePanel}
           setVehicleFound={setVehicleFound}
-          // setVehiclePanelOpen={setVehiclePanelOpen}
+          // setVehiclePanel={setVehiclePanel}
         />
       </div>
       <div
         ref={vehicleFoundRef}
         className="fixed w-full z-10 bottom-0 bg-white px-3 py-6 pt-12 translate-y-full"
       >
-        <LocationForDriver setVehicleFound={setVehicleFound} />
+        <LookingForDriver setVehicleFound={setVehicleFound} />
       </div>
       <div
         ref={waitingForDriverRef}
-        className="fixed w-full z-10 bottom-0 bg-white px-3 py-6 pt-12"
+        className="fixed w-full z-50 bottom-0 bg-white px-3 py-6 pt-12 "
       >
         <WaitingForDriver waitingForDriver={waitingForDriver} />
       </div>
