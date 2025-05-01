@@ -9,7 +9,7 @@ const CaptainDetails = () => {
           <img
             className="h-10 w-10 rounded-full object-cover"
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo5TmPdRp9mhJQ4Unm0a8Bh0OXTRWHMNz0hQ&s"
-            alt=""
+            alt=""  
           />
           <h4 className="text-lg font-medium">Mona</h4>
         </div>

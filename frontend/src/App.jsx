@@ -13,6 +13,7 @@ import CaptainHome from "./pages/CaptainHome";
 import CaptainProtectWrapper from "./pages/CaptainProtectWrapper";
 import Riding from "./pages/Riding";
 import CaptainRiding from "./pages/CaptainRiding";
+import "remixicon/fonts/remixicon.css";
 
 const App = () => {
   return (
