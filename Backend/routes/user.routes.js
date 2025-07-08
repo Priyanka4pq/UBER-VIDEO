@@ -15,6 +15,10 @@ router.post(
       .isLength({ min: 6 })
       .withMessage("Password must be atleast 6 character"),
   ],
+  // (req, res, next) => {
+  //   console.log("DEBUG BODY:", req.body);
+  //   next();
+  // },
   userController.registerUser
   //  (req, res) => {
   //   log(req.body);
@@ -35,4 +39,8 @@ router.post(
 router.get("/profile", authMiddleware.authUser, userController.getUserProfile);
 router.get("/logout", authMiddleware.authUser, userController.logoutUser);
 
+router.get( '/et-user',(res,req)=>{
+  
+}
+);
 module.exports = router;

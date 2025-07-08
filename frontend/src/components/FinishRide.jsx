@@ -61,7 +61,7 @@ const FinishRide = (props) => {
 
         <div className="mt-6 w-full">
           <Link
-            to="/captain-riding"
+            to="/captain-home"
             className="w-full flex justify-center bg-green-600 mt-5 text-white font-semibold p-3 rounded-lg"
           >
             Finish Ride
