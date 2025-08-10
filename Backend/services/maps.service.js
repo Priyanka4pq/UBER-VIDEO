@@ -1,5 +1,7 @@
 const axios = require("axios");
 const env = require("dotenv");
+const captainModel = require("../models/captain.models");
+const { Aggregate } = require("mongoose");
 env.config(); // Load environment variables from .env file
 
 module.exports.getAddressCoordinates = async (address) => {
@@ -19,7 +21,7 @@ module.exports.getAddressCoordinates = async (address) => {
     ) {
       const location = response.data.results[0].geometry.location;
       return {
-        lat: location.lat,
+        ltd: location.lat,
         lng: location.lng,
       };
     } else {
@@ -41,6 +43,27 @@ module.exports.getAddressCoordinates = async (address) => {
   }
 };
 
+// module.exports.getAddressCoordinates = async (address) => {
+//   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+//   const encodedAddress = encodeURIComponent(address);
+//   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${apiKey}`;
+//   try {
+//     const response = await axios.get(url);
+//     if (response.data.status === "OK") {
+//       const location = response.data.results[0].geometry.location;
+//       return {
+//         lad: location.lat,
+//         lng: location.lng,
+//       };
+//     } else {
+//       throw new Error("Unable to fetch coordinates");
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     throw error;
+//   }
+// };
+
 module.exports.getDistanceAndTime = async (origin, destination) => {
   if (!origin || !destination) {
     throw new Error("Origin and destination are required");
@@ -60,8 +83,8 @@ module.exports.getDistanceAndTime = async (origin, destination) => {
       const element = response.data.rows[0].elements[0]; // Access the first element of the first row
       if (element.status === "OK") {
         return {
-          distance: element.distance.text,
-          duration: element.duration.text,
+          distance: element.distance,
+          duration: element.duration,
         };
       } else {
         throw new Error(`Distance Matrix error: ${element.status}`);
@@ -83,32 +106,76 @@ module.exports.getDistanceAndTime = async (origin, destination) => {
 
 module.exports.getAutoCompleteSuggestions = async (input) => {
   if (!input || input.length < 3) {
-    throw new Error("Input must be at least 3 characters long");
+    return [];
   }
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-  const encodedInput = encodeURIComponent(input);
-  const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodedInput}&key=${apiKey}`;
-  try {
-    const response = await axios.get(url);
 
-    console.log("🌐 Google Maps Autocomplete response:", response.data);
+  try {
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+    const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
+      input
+    )}&key=${apiKey}`;
+
+    const response = await axios.get(url);
 
     if (response.data.status === "OK") {
       return response.data.predictions.map((prediction) => ({
         description: prediction.description,
         placeId: prediction.place_id,
       }));
-    } else {
-      throw new Error(`Autocomplete error: ${response.data.status}`);
     }
+
+    return [];
   } catch (error) {
-    console.error(
-      "❌ Google Maps API error:",
-      error.response?.data?.error_message || error.message
-    );
-    throw new Error(
-      "Error fetching autocomplete suggestions: " +
-        (error.response?.data?.error_message || error.message)
-    );
+    console.error("Google Places API error:", error);
+    throw new Error("Failed to fetch location suggestions");
   }
 };
+
+// module.exports.getCaptainsInTheRadius = async (lat, lng, radius) => {
+//   // radius in km
+//   if (!lat || !lng || !radius) {
+//     throw new Error("Latitude, longitude, and radius are required");
+//   }
+
+//   try {
+//     const captains = await captainModel.find({
+//       location: {
+//         $geoWithin: {
+//           $centerSphere: [[lat, lng], radius / 6371],
+//         },
+//       },
+//     });
+
+//     return captains;
+//   } catch (error) {
+//     console.error("Error fetching captains in the radius:", error);
+//     throw new Error("Failed to fetch captains");
+//   }
+// };
+
+module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
+  const captains = await captainModel.find({
+    location: {
+      $geoWithin: {
+        $centerSphere: [[ltd, lng], radius / 6371],
+      },
+
+      //   $geometry: {
+      //     type: "Point",
+      //     coordinates: [lng, lat],
+      //   },
+      //   $maxDistance: meters, // Limit the search to within the specified radius
+      // },
+    },
+  });
+  return captains;
+};
+
+// const captains = await captainModel.Aggregate({
+//   $group:{
+
+//   },
+//   limit:{
+
+//   }
+// })
