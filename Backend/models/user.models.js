@@ -55,5 +55,5 @@ userSchema.statics.verifyAuthToken = function (token) {
   }
 };
 
-const UserModel = mongoose.model("User", userSchema);
+const UserModel = mongoose.model("user", userSchema);
 module.exports = UserModel;
