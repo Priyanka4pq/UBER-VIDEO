@@ -11,6 +11,8 @@ const CaptainSignup = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  // const [lat, setLat] = useState(null);
+  // const [lng, setLng] = useState(null);
 
   const [vehicleColor, setVehicleColor] = useState("");
   const [vehiclePlate, setVehiclePlate] = useState("");
@@ -18,6 +20,24 @@ const CaptainSignup = () => {
   const [vehicleType, setVehicleType] = useState("");
 
   const { captain, setCaptain } = React.useContext(CaptainDataContext);
+
+  // const getUserLocation = () => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         setLat(position.coords.latitude);
+  //         setLng(position.coords.longitude);
+  //         alert("Location captured successfully.");
+  //       },
+  //       (error) => {
+  //         console.error("Error getting location:", error);
+  //         alert("Please enable location services to proceed.");
+  //       }
+  //     );
+  //   } else {
+  //     alert("Geolocation is not supported by this browser.");
+  //   }
+  // };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -34,9 +54,14 @@ const CaptainSignup = () => {
         capacity: vehicleCapacity,
         vehicleType: vehicleType,
       },
+      // lat: lat,
+      // lng: lng,
     };
     console.log("Data being sent to backend:", captainData);
-
+    // if (lat === null || lng === null) {
+    //   alert("Please click 'Use My Current Location' to allow location access.");
+    //   return;
+    // }
     const response = await axios.post(
       `${import.meta.env.VITE_BASE_URL}/captains/register`,
       captainData
@@ -166,13 +191,29 @@ const CaptainSignup = () => {
                       Select Vehicle Type
                     </option>
                     <option value="car">car</option>
-                    <option value="bike">bike</option>
+                    <option value="moto">bike</option>
                     <option value="auto">auto</option>
                   </select>
                 </div>
               </div>
             </div>
-            <button className="bg-[#111] text-white font-semibold mb-3 rounded px-4 py-2 w-full text-lg placeholder::text-sm">
+            {/* <button
+              type="button"
+              onClick={getUserLocation}
+              className="bg-blue-600 text-white font-semibold rounded px-4 py-2 w-full text-lg mb-4"
+            >
+              📍 Use My Current Location
+            </button> */}
+
+            <button
+              // disabled={lat === null || lng === null}
+              // className={`${
+              //   lat === null || lng === null
+              //     ? "bg-gray-400 cursor-not-allowed"
+              //     : "bg-[#111]"
+              // } text-white font-semibold mb-3 rounded px-4 py-2 w-full text-lg`}
+              className="text-black font-semibold mb-3 rounded px-4 py-2 w-full text-lg"
+            >
               Create Captain Account
             </button>
           </form>

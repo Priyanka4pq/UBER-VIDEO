@@ -1,7 +1,20 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useContext } from "react";
+import { SocketContext } from "../context/SocketContext";
+import { Navigate } from "react-router-dom";
+import LiveTracking from "../components/LiveTracking";
 
 const Riding = () => {
+  const location = useLocation();
+  const ride = location.state?.ride; // Get ride data from navigation
+  const { socket } = useContext(SocketContext);
+  const navigate = useNavigate();
+
+  socket.on("ride-ended", (ride) => {
+    navigate("/home", { state: { ride } }); // Redirect to home with ride data
+  });
+
   return (
     <div className="h-screen">
       <Link
@@ -12,12 +25,7 @@ const Riding = () => {
       </Link>
 
       <div className="h-1/2">
-        <img
-          className="h-full w-full object-cover"
-          src="https://miro.medium.com/v2/resize:fit:1200/1*pDuy0gLCj1dgGxUCsG-KUQ.png"
-          // src="https://cdn.prod.website-files.com/6050a76fa6a633d5d54ae714/651ecaa877fc8afd7077fab5_hdmap-b.gif"
-          alt=""
-        />
+        <LiveTracking/>
       </div>
       <div className="h-1/2 p-4">
         <div className="flex items-center justify-between">
@@ -27,10 +35,18 @@ const Riding = () => {
             alt=""
           />
           <div className="text-right">
-            <h2 className="text-lg font-medium capitalize">Priyanka</h2>
-            <h4 className="text-xl font-semibold -mt-1 -mb-1">MP04 AB 1234</h4>
-            <p className="text-sm text-gray-600">Maruti Suzuki Alto</p>
-            {/* <h1 className="text-lg font-semibold"> {props.ride?.otp} </h1> */}
+            <h2 className="text-lg font-medium capitalize">
+              {ride?.captain?.fullname?.firstname || "Captain"}
+            </h2>
+            <h4 className="text-xl font-semibold -mt-1 -mb-1">
+              {ride?.captain?.vehicle?.plate || "Plate"}
+            </h4>
+            <p className="text-sm text-gray-600">
+              {ride?.captain?.vehicle?.vehicleType || "Vehicle"}
+            </p>
+            <h1 className="text-lg font-semibold">
+              {ride?.otp ? `OTP: ${ride.otp}` : ""}
+            </h1>
           </div>
         </div>
 
@@ -39,17 +55,19 @@ const Riding = () => {
             <div className="flex items-center gap-5 p-3 border-b-2">
               <i className="ri-map-pin-user-fill"></i>
               <div>
-                <h3 className="text-lg font-medium">562/11-A</h3>
+                <h3 className="text-lg font-medium">
+                  {ride?.pickup || "Pickup"}
+                </h3>
                 <p className="text-sm -mt-1 text-gray-600">
-                  Kanakariya Talab, Bhopal
+                  {ride?.destination || "Destination"}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-5 p-3">
               <i className="ri-currency-line"></i>
               <div>
-                <h3 className="text-lg font-medium">₹130.00 </h3>
-                <p className="text-sm -mt-1 text-gray-600">Cash Cash</p>
+                <h3 className="text-lg font-medium">₹{ride?.fare || "Fare"}</h3>
+                <p className="text-sm -mt-1 text-gray-600">Cash</p>
               </div>
             </div>
           </div>
