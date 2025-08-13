@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-// import { CaptainDataProvider } from "./context/CaptainContext";
+// import { CaptainDataContext } from "./context/CaptainContext";
 import UserLogin from "./pages/UserLogin";
 import UserSignup from "./pages/UserSignup";
 import CaptainSignup from "./pages/CaptainSignup";
@@ -24,9 +24,11 @@ const App = () => {
         <Route path="/login" element={<UserLogin />} />
         <Route path="/riding" element={<Riding />} />
         <Route path="/captain-riding" element={<CaptainRiding />} />
+        
         <Route path="/signup" element={<UserSignup />} />
         <Route path="/captain-login" element={<Captainlogin />} />
         <Route path="/captain-signup" element={<CaptainSignup />} />
+
         <Route
           path="/home"
           element={
