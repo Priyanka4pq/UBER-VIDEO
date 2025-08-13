@@ -32,4 +32,17 @@ router.get(
   mapController.getAutoCompleteSuggestions
 );
 
+
+router.get("/autocomplete", authMiddleware.authUser, async (req, res) => {
+  try {
+    const { input } = req.query;
+    const suggestions = await mapsService.getAutoCompleteSuggestions(input);
+    res.status(200).json(suggestions);
+  } catch (error) {
+    console.error("Autocomplete error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 module.exports = router;
