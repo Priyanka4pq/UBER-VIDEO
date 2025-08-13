@@ -535,8 +535,136 @@ This endpoint is used to log out the currently authenticated captain by blacklis
 
 ---
 
+# Ride Routes Documentation
+
+## Endpoint: `/rides/create`
+
+### Description
+
+Creates a new ride request with specified pickup, destination, and vehicle type.
+
+### Method
+
+`POST`
+
+### Headers
+
+| Header          | Type   | Required | Description                      |
+| --------------- | ------ | -------- | -------------------------------- |
+| `Authorization` | String | Yes      | Bearer token for authentication. |
+
+### Request Body
+
+| Field         | Type   | Required | Description                                |
+| ------------- | ------ | -------- | ------------------------------------------ |
+| `pickup`      | String | Yes      | Pickup location address (min 3 characters) |
+| `destination` | String | Yes      | Destination address (min 3 characters)     |
+| `vehicleType` | String | Yes      | Must be either 'auto', 'car', or 'moto'    |
+
+### Example Request Body
+
+```json
+{
+  "pickup": "123 Main St, City",
+  "destination": "456 Park Ave, City",
+  "vehicleType": "car"
+}
+```
+
+### Response
+
+#### Success (201 Created)
+
+```json
+{
+  "id": "ride_id",
+  "user": "user_id",
+  "pickup": "123 Main St, City",
+  "destination": "456 Park Ave, City",
+  "fare": 150,
+  "otp": "123456",
+  "status": "pending"
+}
+```
+
+#### Error (400 Bad Request)
+
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid pickup address",
+      "param": "pickup"
+    }
+  ]
+}
+```
+
+## Endpoint: `/rides/get-fare`
+
+### Description
+
+Calculates fare for a ride between specified pickup and destination locations.
+
+### Method
+
+`GET`
+
+### Headers
+
+| Header          | Type   | Required | Description                      |
+| --------------- | ------ | -------- | -------------------------------- |
+| `Authorization` | String | Yes      | Bearer token for authentication. |
+
+### Query Parameters
+
+| Parameter     | Type   | Required | Description                                |
+| ------------- | ------ | -------- | ------------------------------------------ |
+| `pickup`      | String | Yes      | Pickup location address (min 3 characters) |
+| `destination` | String | Yes      | Destination address (min 3 characters)     |
+
+### Example Request
+
+```
+GET /rides/get-fare?pickup=123%20Main%20St&destination=456%20Park%20Ave
+```
+
+### Response
+
+#### Success (200 OK)
+
+```json
+{
+  "auto": 120,
+  "car": 180,
+  "moto": 90
+}
+```
+
+#### Error (400 Bad Request)
+
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid pickup address",
+      "param": "pickup"
+    }
+  ]
+}
+```
+
+#### Error (500 Internal Server Error)
+
+```json
+{
+  "message": "Error calculating fare"
+}
+```
+
 ### Notes
 
-- Ensure that the `email` field is unique for registration.
-- Passwords are hashed before being stored in the database.
-- The token must not be blacklisted for protected routes.
+- All fares are calculated in INR
+- Base fare and per-km rates vary by vehicle type
+- Distance and duration are calculated using Google Maps API
+- Fare includes base fare + distance fare + time fare
