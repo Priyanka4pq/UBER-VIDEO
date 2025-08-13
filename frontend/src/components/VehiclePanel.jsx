@@ -1,12 +1,18 @@
 import React from "react";
 
-const VehiclePanel = (props) => {
+const VehiclePanel = ({
+  fare = {},
+  // createRide,
+  setConfirmRidePanel,
+  setVehiclePanel,
+  selectVehicle,
+}) => {
   return (
     <div>
       <h5
         className="p-1 text-center w-[100%] absolute top-0"
         onClick={() => {
-          props.setVehiclePanel(false);
+          setVehiclePanel(false);
         }}
       >
         <i className="text-3xl text-gray-200 ri-arrow-down-wide-line"></i>
@@ -14,8 +20,8 @@ const VehiclePanel = (props) => {
       <h3 className="text-2xl font-semibold mb-5">Choose a Vehicle</h3>
       <div
         onClick={() => {
-          props.setConfirmRidePanel(true);
-          // props.selectVehicle("car");
+          setConfirmRidePanel(true);
+          selectVehicle("car");
         }}
         className="flex border-2 active:border-black  mb-2 rounded-xl w-full p-3  items-center justify-between"
       >
@@ -36,12 +42,12 @@ const VehiclePanel = (props) => {
             Affordable, compact rides
           </p>
         </div>
-        <h2 className="text-lg font-semibold">₹130.00</h2>
+        <h2 className="text-lg font-semibold">₹{fare?.car || "--"}</h2>
       </div>
       <div
         onClick={() => {
-          props.setConfirmRidePanel(true);
-          props.selectVehicle("moto");
+          setConfirmRidePanel(true);
+          selectVehicle("moto");
         }}
         className="flex border-2 active:border-black mb-2 rounded-xl w-full p-3  items-center justify-between"
       >
@@ -62,12 +68,12 @@ const VehiclePanel = (props) => {
             Affordable motorcycle rides
           </p>
         </div>
-        <h2 className="text-lg font-semibold">₹150</h2>
+        <h2 className="text-lg font-semibold">₹{fare?.moto || "--"}</h2>
       </div>
       <div
         onClick={() => {
-          props.setConfirmRidePanel(true);
-          props.selectVehicle("auto");
+          setConfirmRidePanel(true);
+          selectVehicle("auto");
         }}
         className="flex border-2 active:border-black mb-2 rounded-xl w-full p-3  items-center justify-between"
       >
@@ -88,7 +94,7 @@ const VehiclePanel = (props) => {
             Affordable Auto rides
           </p>
         </div>
-        <h2 className="text-lg font-semibold">₹100</h2>
+        <h2 className="text-lg font-semibold">₹{fare?.auto || "--"}</h2>
       </div>
     </div>
   );

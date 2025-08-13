@@ -22,7 +22,11 @@ const RidePopUp = (props) => {
             src="https://cdn.pixabay.com/photo/2017/08/01/01/33/beanie-2562646_1280.jpg"
             alt=""
           />
-          <h2 className="text-lg font-medium">Saheer Ghandhi</h2>
+          <h2 className="text-lg font-medium">
+            {props.ride?.user.fullname.firstname +
+              " " +
+              props.ride?.user.fullname.lastname}
+          </h2>
         </div>
         <h5 className="text-lg font-semibold">2.2 KM</h5>
       </div>
@@ -39,7 +43,7 @@ const RidePopUp = (props) => {
             <div>
               <h3 className="text-lg font-medium">562/11-A</h3>
               <p className="text-sm -mt-1 text-gray-600">
-                Kanakariya Talab, Bhopal
+                {props?.ride?.pickup}
               </p>
             </div>
           </div>
@@ -49,7 +53,7 @@ const RidePopUp = (props) => {
             <div>
               <h3 className="text-lg font-medium">562/11-A</h3>
               <p className="text-sm -mt-1 text-gray-600">
-                Kanakariya Talab, Bhopal
+                {props?.ride?.destination}
               </p>
             </div>
           </div>
@@ -57,7 +61,7 @@ const RidePopUp = (props) => {
           <div className="flex items-center gap-5 p-3 border-b-2 border-gray-300">
             <i className="ri-currency-line"></i>
             <div>
-              <h3 className="text-lg font-medium">$35</h3>
+              <h3 className="text-lg font-medium">₹{props.ride?.fare}</h3>
               <p className="text-sm -mt-1 text-gray-600">Cash Cash</p>
             </div>
           </div>
@@ -65,7 +69,8 @@ const RidePopUp = (props) => {
         <div className="flex w-full items-center justify-between mt-5">
           <button
             onClick={() => {
-              props.setRidePopUpPanel(false);
+              props.setRidePopUpPanel(true);
+              props.confirmRide();
             }}
             className=" mt-1 bg-gray-200 text-gray-500 font-semibold p-3 px-8 rounded-lg"
           >
@@ -73,7 +78,7 @@ const RidePopUp = (props) => {
           </button>
           <button
             onClick={() => {
-              props.setConfirmRidePopUpPanel(true);
+              props.setConfirmRidePopUpPanel(false);
             }}
             className=" bg-green-600 mt-1 text-white font-semibold p-3 px-8 rounded-lg"
           >
