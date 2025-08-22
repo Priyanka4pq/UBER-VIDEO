@@ -2,6 +2,7 @@ const blacklistTokenModel = require("../models/blacklistToken.models");
 const captainModel = require("../models/captain.models");
 const captainService = require("../services/captain.service");
 const { validationResult } = require("express-validator");
+
 module.exports.registerCaptain = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -66,4 +67,59 @@ module.exports.logoutCaptain = async (req, res) => {
   await blacklistTokenModel.create({ token });
   res.clearCookie("token");
   res.status(200).json({ message: "Logout successful" });
+};
+
+module.exports.updateCaptainStatus = async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    const captainId = req.captain._id;
+    
+    const updatedCaptain = await captainService.updateCaptainStatus(captainId, status);
+    
+    res.status(200).json({ 
+      message: "Status updated successfully", 
+      captain: updatedCaptain 
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+module.exports.updateCaptainLocation = async (req, res, next) => {
+  try {
+    const { location } = req.body;
+    const captainId = req.captain._id;
+    
+    const updatedCaptain = await captainService.updateCaptainLocation(captainId, location);
+    
+    res.status(200).json({ 
+      message: "Location updated successfully", 
+      captain: updatedCaptain 
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+module.exports.getNearbyActiveCaptains = async (req, res, next) => {
+  try {
+    const { ltd, lng, radius = 5 } = req.query;
+    
+    if (!ltd || !lng) {
+      return res.status(400).json({ message: "Location coordinates are required" });
+    }
+    
+    const center = { ltd: parseFloat(ltd), lng: parseFloat(lng) };
+    const radiusInKm = parseFloat(radius);
+    
+    const captains = await captainService.getNearbyActiveCaptains(center, radiusInKm);
+    
+    res.status(200).json({ 
+      message: "Nearby active captains retrieved successfully", 
+      captains,
+      count: captains.length 
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
