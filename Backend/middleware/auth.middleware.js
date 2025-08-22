@@ -20,7 +20,12 @@ module.exports.authUser = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log("Decoded token:", decoded); // Debugging line
-    const user = await UserModel.findById(decoded._id); // Use _id instead of id
+    const userId = decoded._id || decoded.id; // Handle both _id and id
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized: User not found" });
+    }
 
     req.user = user; // Attach user to request object
 

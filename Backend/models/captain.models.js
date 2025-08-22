@@ -62,13 +62,17 @@ const captainSchema = new mongoose.Schema({
     },
   },
  location: {
-        ltd: {
-            type: Number,
-        },
-        lng: {
-            type: Number,
-        }
-    }
+    type: {
+      type: String,
+      enum: ["Point"],
+      default: "Point",
+    },
+    coordinates: {
+      type: [Number], // [lng, lat]
+      required: true,
+      default: [0, 0],
+    },
+  }
 });
 
 // captainSchema.index({ location: "2dsphere" });
@@ -92,6 +96,9 @@ captainSchema.statics.hashPassword = async function (password) {
 
 const captainModel = mongoose.model("captain", captainSchema);
 module.exports = captainModel;
+
+// Add geospatial index for location-based queries
+captainModel.collection.createIndex({ location: "2dsphere" });
 
 // const mongoose = require("mongoose");
 // const bcrypt = require("bcrypt");
