@@ -225,18 +225,36 @@ const Home = () => {
   }
 
   async function createRide() {
-    const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/rides/create`,
-      {
-        pickup,
-        destination,
-        vehicleType,
-      },
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/rides/create`,
+        {
+          pickup,
+          destination,
+          vehicleType,
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      console.log("Ride created:", response.data);
+      
+      // Store ride data for tracking
+      setRide(response.data);
+      
+      // Check if any drivers were notified
+      if (response.data.driversNotified === 0) {
+        alert("No drivers available in your area. Please try again later.");
+        setVehicleFound(false);
       }
-    );
-    console.log(response.data);
+      
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ride:", error);
+      alert("Failed to create ride. Please try again.");
+      setVehicleFound(false);
+      throw error;
+    }
   }
 
   return (
@@ -339,7 +357,7 @@ const Home = () => {
           vehicleType={vehicleType}
           setConfirmRidePanel={setConfirmRidePanel}
           setVehicleFound={setVehicleFound}
-          // setVehiclePanel={setVehiclePanel}
+          setVehiclePanel={setVehiclePanel}
         />
       </div>
       <div

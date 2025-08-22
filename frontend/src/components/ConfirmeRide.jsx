@@ -8,6 +8,7 @@ const ConfirmeRide = ({
   setVehicleFound,
   setConfirmRidePanel,
   createRide,
+  setVehiclePanel,
 }) => {
   const currentFare = fare && vehicleType ? fare[vehicleType] || 0 : 0;
   return (
@@ -26,7 +27,7 @@ const ConfirmeRide = ({
 
       <div
         onClick={() => {
-          setVehiclePanelOpen(false);
+          setVehiclePanel(false);
         }}
         className="flex gap-2 flex-col justify-between items-center"
       >

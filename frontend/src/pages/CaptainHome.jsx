@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CaptainDetails from "../components/CaptainDetails";
+import CaptainStatusToggle from "../components/CaptainStatusToggle";
 import RidePopUp from "../components/RidePopUp";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -8,6 +9,7 @@ import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
 import { useEffect, useContext } from "react";
 import { SocketContext } from "../context/SocketContext";
 import { CaptainDataContext } from "../context/CaptainContext";
+import axios from "axios";
 
 const CaptainHome = () => {
   const [ridePopUpPanel, setRidePopUpPanel] = useState(false);
@@ -15,7 +17,7 @@ const CaptainHome = () => {
   const ridePopUpPanelRef = useRef(null);
   const confirmRidePopUpPanelRef = useRef(null);
   const [ride, setRide] = useState(null); // Assuming ride data will be set later
-
+  const [vehiclePanelOpen, setVehiclePanelOpen] = useState(false);
   const { socket } = useContext(SocketContext);
   const { captain } = useContext(CaptainDataContext);
 
@@ -43,10 +45,9 @@ const CaptainHome = () => {
     // return () => clearInterval(locationInterval);
   });
   socket.on("new-ride", (data) => {
-    // console.log("New ride data received:", data);
+    console.log("New ride data received:", data);
     setRide(data);
-    setRidePopupPanel(true);
-    // setConfirmRidePopUpPanel(true);
+    setRidePopUpPanel(true);
   });
 
   async function confirmRide() {
@@ -123,6 +124,7 @@ const CaptainHome = () => {
         />
       </div>
       <div className="h-2/5 p-6">
+        <CaptainStatusToggle />
         <CaptainDetails />
       </div>
       <div
@@ -132,6 +134,7 @@ const CaptainHome = () => {
         <RidePopUp
           ride={ride}
           setRidePopUpPanel={setRidePopUpPanel}
+          setVehiclePanelOpen={setVehiclePanelOpen} // Pass the function here
           setConfirmRidePopUpPanel={setConfirmRidePopUpPanel}
           confirmRide={confirmRide}
         />
