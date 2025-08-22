@@ -43,27 +43,6 @@ module.exports.getAddressCoordinates = async (address) => {
   }
 };
 
-// module.exports.getAddressCoordinates = async (address) => {
-//   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-//   const encodedAddress = encodeURIComponent(address);
-//   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${apiKey}`;
-//   try {
-//     const response = await axios.get(url);
-//     if (response.data.status === "OK") {
-//       const location = response.data.results[0].geometry.location;
-//       return {
-//         lad: location.lat,
-//         lng: location.lng,
-//       };
-//     } else {
-//       throw new Error("Unable to fetch coordinates");
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// };
-
 module.exports.getDistanceAndTime = async (origin, destination) => {
   if (!origin || !destination) {
     throw new Error("Origin and destination are required");
@@ -131,51 +110,14 @@ module.exports.getAutoCompleteSuggestions = async (input) => {
   }
 };
 
-// module.exports.getCaptainsInTheRadius = async (lat, lng, radius) => {
-//   // radius in km
-//   if (!lat || !lng || !radius) {
-//     throw new Error("Latitude, longitude, and radius are required");
-//   }
-
-//   try {
-//     const captains = await captainModel.find({
-//       location: {
-//         $geoWithin: {
-//           $centerSphere: [[lat, lng], radius / 6371],
-//         },
-//       },
-//     });
-
-//     return captains;
-//   } catch (error) {
-//     console.error("Error fetching captains in the radius:", error);
-//     throw new Error("Failed to fetch captains");
-//   }
-// };
-
-module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
+module.exports.getCaptainsInTheRadius = async (lng, ltd, radius) => {
   const captains = await captainModel.find({
+    status: "active",
     location: {
       $geoWithin: {
-        $centerSphere: [[ltd, lng], radius / 6371],
+        $centerSphere: [[lng, ltd], radius / 6371],
       },
-
-      //   $geometry: {
-      //     type: "Point",
-      //     coordinates: [lng, lat],
-      //   },
-      //   $maxDistance: meters, // Limit the search to within the specified radius
-      // },
     },
   });
   return captains;
 };
-
-// const captains = await captainModel.Aggregate({
-//   $group:{
-
-//   },
-//   limit:{
-
-//   }
-// })
