@@ -53,4 +53,36 @@ router.get(
   captainController.logoutCaptain
 );
 
+// New endpoints for captain status management
+router.post(
+  "/status",
+  authMiddleware.authCaptain,
+  [
+    body("status")
+      .isIn(["active", "inactive"])
+      .withMessage("Status must be either active or inactive"),
+  ],
+  captainController.updateCaptainStatus
+);
+
+router.post(
+  "/location",
+  authMiddleware.authCaptain,
+  [
+    body("location.ltd").isFloat().withMessage("Latitude must be a number"),
+    body("location.lng").isFloat().withMessage("Longitude must be a number"),
+  ],
+  captainController.updateCaptainLocation
+);
+
+router.get(
+  "/nearby",
+  [
+    body("ltd").isFloat().withMessage("Latitude must be a number"),
+    body("lng").isFloat().withMessage("Longitude must be a number"),
+    body("radius").optional().isFloat({ min: 0 }).withMessage("Radius must be a positive number"),
+  ],
+  captainController.getNearbyActiveCaptains
+);
+
 module.exports = router;
